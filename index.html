@@ -25,7 +25,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- MAIN WEBSITE - PUBLIC VIEW (No Stats) -->
+    <!-- MAIN WEBSITE - PUBLIC VIEW (NO STATS) -->
     <!-- ========================================================== -->
     <div id="mainApp">
 
@@ -61,24 +61,29 @@
             </div>
         </div>
 
-        <!-- PUBLIC STATS BAR - HIDDEN (Only for Admin) -->
-        <div class="stats-bar admin-only" id="publicStats">
-            <div class="container">
-                <div class="stat-item">
-                    <i class="fas fa-film"></i>
-                    <span>Total Movies: <strong id="statMovies">0</strong></span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-eye"></i>
-                    <span>Total Views: <strong id="statViews">0</strong></span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-comment"></i>
-                    <span>Total Comments: <strong id="statComments">0</strong></span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <span>Active Users: <strong id="statUsers">0</strong></span>
+        <!-- ========================================================== -->
+        <!-- STATS BAR - COMPLETELY REMOVED FROM PUBLIC -->
+        <!-- ========================================================== -->
+        <!-- Public ko stats nahi dikhenge - yeh section sirf admin ke liye hai -->
+        <div id="adminStatsContainer" style="display:none;">
+            <div class="stats-bar">
+                <div class="container">
+                    <div class="stat-item">
+                        <i class="fas fa-film"></i>
+                        <span>Total Movies: <strong id="statMovies">0</strong></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-eye"></i>
+                        <span>Total Views: <strong id="statViews">0</strong></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-comment"></i>
+                        <span>Total Comments: <strong id="statComments">0</strong></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span>Active Users: <strong id="statUsers">0</strong></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -214,7 +219,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- DETAIL OVERLAY - DOWNLOAD IN NEW TAB -->
+    <!-- DETAIL OVERLAY - POSTER FULL, DOWNLOAD NEW TAB -->
     <!-- ========================================================== -->
     <div id="detailOverlay">
         <div class="detail-box">
