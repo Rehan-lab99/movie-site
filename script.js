@@ -30,6 +30,7 @@ const adminPanel = document.getElementById('secretAdminPanel');
 const closeAdminPanelBtn = document.getElementById('closeAdminPanelBtn');
 const resultCount = document.getElementById('resultCount');
 const totalCount = document.getElementById('totalCount');
+const publicStats = document.getElementById('publicStats');
 
 const contentForm = document.getElementById('contentForm');
 const editId = document.getElementById('editId');
@@ -55,7 +56,6 @@ const detailQuality = document.getElementById('detailQuality');
 const detailYear = document.getElementById('detailYear');
 const detailCategory = document.getElementById('detailCategory');
 const detailDesc = document.getElementById('detailDesc');
-const detailViews = document.getElementById('detailViews');
 const detailCommentCount = document.getElementById('detailCommentCount');
 const detailCommentCount2 = document.getElementById('detailCommentCount2');
 const detailPosterImg = document.getElementById('detailPosterImg');
@@ -157,9 +157,17 @@ async function getStats() {
 }
 
 // ============================================================
-//  UPDATE STATS
+//  UPDATE STATS - ONLY FOR ADMIN
 // ============================================================
 async function updateStats() {
+    if (!isAdminUnlocked) {
+        // Public ko stats nahi dikhenge
+        document.getElementById('publicStats').style.display = 'none';
+        return;
+    }
+
+    // Admin ko stats dikhenge
+    document.getElementById('publicStats').style.display = 'flex';
     const stats = await getStats();
     if (stats) {
         document.getElementById('statMovies').textContent = stats.totalMovies;
@@ -167,11 +175,9 @@ async function updateStats() {
         document.getElementById('statComments').textContent = stats.totalComments;
         document.getElementById('statUsers').textContent = stats.activeUsers;
 
-        if (isAdminUnlocked) {
-            document.getElementById('dashMovies').textContent = stats.totalMovies;
-            document.getElementById('dashViews').textContent = stats.totalViews.toLocaleString();
-            document.getElementById('dashComments').textContent = stats.totalComments;
-        }
+        document.getElementById('dashMovies').textContent = stats.totalMovies;
+        document.getElementById('dashViews').textContent = stats.totalViews.toLocaleString();
+        document.getElementById('dashComments').textContent = stats.totalComments;
         totalCount.textContent = stats.totalMovies;
     }
 }
@@ -216,7 +222,6 @@ function render() {
                 ${movie.poster ? `<img src="${movie.poster}" alt="${movie.title}" loading="lazy" />` : `<span class="no-image"><i class="fas fa-film"></i></span>`}
                 <span class="badge">${movie.category || 'general'}</span>
                 ${movie.quality ? `<span class="quality-badge"><i class="fas fa-hdd"></i> ${movie.quality.split(',')[0]}</span>` : ''}
-                <span class="views-badge"><i class="fas fa-eye"></i> ${(movie.views || 0).toLocaleString()}</span>
             </div>
             <div class="movie-body">
                 <h3>${escapeHtml(movie.title)}</h3>
@@ -244,7 +249,7 @@ function escapeHtml(text) {
 }
 
 // ============================================================
-//  DETAIL OVERLAY
+//  DETAIL OVERLAY - NO VIEWS SHOWN TO PUBLIC
 // ============================================================
 async function openDetail(id) {
     const movie = moviesData.find(m => m.id === id);
@@ -252,10 +257,10 @@ async function openDetail(id) {
 
     currentDetailId = id;
 
-    // Track view
+    // Track view (silently)
     await trackView(id);
 
-    // Reload to get updated view count
+    // Reload to get updated data
     await loadMovies();
     const updatedMovie = moviesData.find(m => m.id === id);
     if (!updatedMovie) return;
@@ -265,7 +270,9 @@ async function openDetail(id) {
     detailYear.textContent = updatedMovie.year || 'N/A';
     detailQuality.textContent = updatedMovie.quality || 'N/A';
     detailDesc.textContent = updatedMovie.description || 'No description available.';
-    detailViews.textContent = (updatedMovie.views || 0).toLocaleString();
+
+    // PUBLIC: NO VIEWS COUNT SHOWN
+    // detailViews is removed from HTML
 
     if (updatedMovie.poster) {
         detailPosterImg.src = updatedMovie.poster;
@@ -276,7 +283,7 @@ async function openDetail(id) {
         detailNoImage.style.display = 'flex';
     }
 
-    // Download links
+    // Download links - Open in NEW TAB
     const links = updatedMovie.links || {};
     const qualities = [
         { key: '480p', label: '480p', size: 'SD' },
@@ -290,7 +297,8 @@ async function openDetail(id) {
             <a href="${hasLink ? url : '#'}" 
                target="${hasLink ? '_blank' : ''}"
                class="download-btn ${hasLink ? 'active' : 'disabled'}"
-               ${hasLink ? '' : 'onclick="return false;"'}>
+               ${hasLink ? '' : 'onclick="return false;"'}
+               title="${hasLink ? 'Download ${q.label} - Opens in new tab' : 'No link available'}">
                 <i class="fas fa-download"></i> ${q.label}
                 <span class="size-tag">${q.size}</span>
             </a>
@@ -398,10 +406,17 @@ function doAdminLogin() {
         sessionStorage.setItem('adminUnlocked', 'true');
         adminLoginPage.classList.remove('visible');
         adminPanel.classList.add('visible');
+        
+        // Show admin-only elements
         document.querySelectorAll('.admin-only').forEach(el => {
             el.classList.add('visible');
         });
+        
+        // Show stats for admin
+        document.getElementById('publicStats').style.display = 'flex';
+        
         resetForm();
+        updateStats();
         adminPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         loginAttempts = 0;
     } else {
@@ -422,12 +437,15 @@ adminLoginCancel.addEventListener('click', () => {
     history.pushState('', document.title, window.location.pathname + window.location.search);
 });
 
+// Check if admin already logged in
 if (sessionStorage.getItem('adminUnlocked') === 'true') {
     isAdminUnlocked = true;
     adminPanel.classList.add('visible');
     document.querySelectorAll('.admin-only').forEach(el => {
         el.classList.add('visible');
     });
+    document.getElementById('publicStats').style.display = 'flex';
+    updateStats();
 }
 
 // ============================================================
@@ -520,7 +538,6 @@ contentForm.addEventListener('submit', async (e) => {
         '1080p': link1080.value.trim()
     }));
 
-    // Check if file is selected
     if (posterInput.files && posterInput.files[0]) {
         formData.append('poster', posterInput.files[0]);
     } else if (posterData.value && posterData.value.startsWith('data:image')) {
@@ -532,8 +549,8 @@ contentForm.addEventListener('submit', async (e) => {
     const success = await saveMovie(formData);
     if (success) {
         resetForm();
-        // Close admin panel after add
-        // adminPanel.classList.remove('visible');
+        await loadMovies();
+        updateStats();
     } else {
         alert('Failed to save movie. Please try again.');
     }
@@ -546,12 +563,12 @@ resetBtn.addEventListener('click', (e) => {
 
 clearAllBtn.addEventListener('click', async () => {
     if (confirm('⚠️ Delete ALL content? This cannot be undone.')) {
-        // Delete all movies one by one
         for (const movie of moviesData) {
             await deleteMovie(movie.id);
         }
         await loadMovies();
         resetForm();
+        updateStats();
     }
 });
 
@@ -581,6 +598,8 @@ detailDeleteBtn.addEventListener('click', async () => {
         }
         await deleteMovie(currentDetailId);
         closeDetail();
+        await loadMovies();
+        updateStats();
     }
 });
 
@@ -650,6 +669,7 @@ function resetInactivityTimer() {
             document.querySelectorAll('.admin-only').forEach(el => {
                 el.classList.remove('visible');
             });
+            document.getElementById('publicStats').style.display = 'none';
             alert('⏰ Auto-logged out due to inactivity.');
             location.reload();
         }
@@ -669,4 +689,6 @@ console.log('🎬 FilmyHub - Real Time Version Loaded');
 console.log('🔑 Admin Password: ' + ADMIN_PASSWORD);
 console.log('🔐 Secret URL: Add #' + SECRET_KEY + ' to the URL');
 console.log('📌 Example: ' + window.location.href.split('#')[0] + '#' + SECRET_KEY);
+console.log('👤 Public users: Only DOWNLOAD & COMMENT');
+console.log('👑 Admin: Full control with STATS');
 console.log('🔄 Auto-sync every 3 seconds for REAL-TIME updates');
