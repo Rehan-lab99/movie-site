@@ -30,7 +30,9 @@ const adminPanel = document.getElementById('secretAdminPanel');
 const closeAdminPanelBtn = document.getElementById('closeAdminPanelBtn');
 const resultCount = document.getElementById('resultCount');
 const totalCount = document.getElementById('totalCount');
-const publicStats = document.getElementById('publicStats');
+
+// Admin stats container - hidden by default
+const adminStatsContainer = document.getElementById('adminStatsContainer');
 
 const contentForm = document.getElementById('contentForm');
 const editId = document.getElementById('editId');
@@ -105,7 +107,9 @@ async function loadMovies() {
     if (data) {
         moviesData = data;
         render();
-        updateStats();
+        if (isAdminUnlocked) {
+            updateAdminStats();
+        }
     }
 }
 
@@ -157,17 +161,17 @@ async function getStats() {
 }
 
 // ============================================================
-//  UPDATE STATS - ONLY FOR ADMIN
+//  UPDATE ADMIN STATS - ONLY FOR ADMIN
 // ============================================================
-async function updateStats() {
+async function updateAdminStats() {
     if (!isAdminUnlocked) {
         // Public ko stats nahi dikhenge
-        document.getElementById('publicStats').style.display = 'none';
+        adminStatsContainer.style.display = 'none';
         return;
     }
 
     // Admin ko stats dikhenge
-    document.getElementById('publicStats').style.display = 'flex';
+    adminStatsContainer.style.display = 'block';
     const stats = await getStats();
     if (stats) {
         document.getElementById('statMovies').textContent = stats.totalMovies;
@@ -272,8 +276,8 @@ async function openDetail(id) {
     detailDesc.textContent = updatedMovie.description || 'No description available.';
 
     // PUBLIC: NO VIEWS COUNT SHOWN
-    // detailViews is removed from HTML
 
+    // POSTER - FULL SIZE
     if (updatedMovie.poster) {
         detailPosterImg.src = updatedMovie.poster;
         detailPosterImg.style.display = 'block';
@@ -413,10 +417,10 @@ function doAdminLogin() {
         });
         
         // Show stats for admin
-        document.getElementById('publicStats').style.display = 'flex';
+        adminStatsContainer.style.display = 'block';
         
         resetForm();
-        updateStats();
+        updateAdminStats();
         adminPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         loginAttempts = 0;
     } else {
@@ -444,8 +448,8 @@ if (sessionStorage.getItem('adminUnlocked') === 'true') {
     document.querySelectorAll('.admin-only').forEach(el => {
         el.classList.add('visible');
     });
-    document.getElementById('publicStats').style.display = 'flex';
-    updateStats();
+    adminStatsContainer.style.display = 'block';
+    updateAdminStats();
 }
 
 // ============================================================
@@ -550,7 +554,7 @@ contentForm.addEventListener('submit', async (e) => {
     if (success) {
         resetForm();
         await loadMovies();
-        updateStats();
+        if (isAdminUnlocked) updateAdminStats();
     } else {
         alert('Failed to save movie. Please try again.');
     }
@@ -568,7 +572,7 @@ clearAllBtn.addEventListener('click', async () => {
         }
         await loadMovies();
         resetForm();
-        updateStats();
+        if (isAdminUnlocked) updateAdminStats();
     }
 });
 
@@ -599,7 +603,7 @@ detailDeleteBtn.addEventListener('click', async () => {
         await deleteMovie(currentDetailId);
         closeDetail();
         await loadMovies();
-        updateStats();
+        if (isAdminUnlocked) updateAdminStats();
     }
 });
 
@@ -669,7 +673,7 @@ function resetInactivityTimer() {
             document.querySelectorAll('.admin-only').forEach(el => {
                 el.classList.remove('visible');
             });
-            document.getElementById('publicStats').style.display = 'none';
+            adminStatsContainer.style.display = 'none';
             alert('⏰ Auto-logged out due to inactivity.');
             location.reload();
         }
@@ -689,6 +693,6 @@ console.log('🎬 FilmyHub - Real Time Version Loaded');
 console.log('🔑 Admin Password: ' + ADMIN_PASSWORD);
 console.log('🔐 Secret URL: Add #' + SECRET_KEY + ' to the URL');
 console.log('📌 Example: ' + window.location.href.split('#')[0] + '#' + SECRET_KEY);
-console.log('👤 Public users: Only DOWNLOAD & COMMENT');
+console.log('👤 Public users: Only DOWNLOAD & COMMENT (NO STATS)');
 console.log('👑 Admin: Full control with STATS');
 console.log('🔄 Auto-sync every 3 seconds for REAL-TIME updates');
