@@ -1,5 +1,5 @@
 /* ============================================================
-   COMPLETE STYLING - FIXED
+   COMPLETE STYLING - FIXED POSTER SIZE
    ============================================================ */
 * {
     margin: 0;
@@ -400,7 +400,7 @@ header .container {
 }
 
 /* ============================================================
-   DETAIL OVERLAY - POSTER FULL
+   DETAIL OVERLAY - POSTER FULL SIZE
    ============================================================ */
 #detailOverlay {
     position: fixed;
@@ -446,7 +446,7 @@ header .container {
 }
 
 .detail-poster {
-    height: 380px;
+    height: 420px;
     background: var(--secondary);
     display: flex;
     align-items: center;
@@ -1193,7 +1193,7 @@ footer .footer-copy i {
     }
 
     .detail-poster {
-        height: 220px;
+        height: 250px;
     }
 
     .movie-poster {
