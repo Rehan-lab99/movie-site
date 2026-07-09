@@ -25,7 +25,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- MAIN WEBSITE -->
+    <!-- MAIN WEBSITE - PUBLIC VIEW (No Stats) -->
     <!-- ========================================================== -->
     <div id="mainApp">
 
@@ -61,8 +61,8 @@
             </div>
         </div>
 
-        <!-- STATS BAR -->
-        <div class="stats-bar">
+        <!-- PUBLIC STATS BAR - HIDDEN (Only for Admin) -->
+        <div class="stats-bar admin-only" id="publicStats">
             <div class="container">
                 <div class="stat-item">
                     <i class="fas fa-film"></i>
@@ -85,7 +85,7 @@
 
         <div class="container">
 
-            <!-- ADMIN PANEL -->
+            <!-- ADMIN PANEL - SECRET -->
             <div id="secretAdminPanel">
                 <div class="admin-header">
                     <h2><i class="fas fa-edit"></i> Content Manager</h2>
@@ -214,7 +214,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- DETAIL OVERLAY -->
+    <!-- DETAIL OVERLAY - DOWNLOAD IN NEW TAB -->
     <!-- ========================================================== -->
     <div id="detailOverlay">
         <div class="detail-box">
@@ -232,24 +232,26 @@
                     <span><i class="fas fa-hdd"></i> <span id="detailQuality">Quality</span></span>
                 </div>
 
+                <!-- PUBLIC: Only comment count, NO views -->
                 <div class="detail-stats">
-                    <span><i class="fas fa-eye"></i> <span id="detailViews">0</span> views</span>
                     <span><i class="fas fa-comment"></i> <span id="detailCommentCount">0</span> comments</span>
                 </div>
 
                 <div class="detail-desc" id="detailDesc">Description...</div>
 
+                <!-- DOWNLOAD SECTION - Opens in NEW TAB -->
                 <div class="download-section">
                     <div class="download-header">
                         <i class="fas fa-download"></i>
                         <h4>Download Now</h4>
                         <span style="margin-left:auto;font-size:0.7rem;color:var(--text-muted);">
-                            <i class="fas fa-shield-alt"></i> Secure Links
+                            <i class="fas fa-external-link-alt"></i> Opens in new tab
                         </span>
                     </div>
                     <div class="download-grid" id="downloadLinksContainer"></div>
                 </div>
 
+                <!-- COMMENTS SECTION -->
                 <div class="comments-section">
                     <div class="comments-header">
                         <h4><i class="fas fa-comments"></i> Comments (<span id="detailCommentCount2">0</span>)</h4>
