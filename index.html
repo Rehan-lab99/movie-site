@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FilmyHub - Download Latest Movies & Web Series 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+    <!-- ========================================================== -->
+    <!-- ADMIN LOGIN OVERLAY -->
+    <!-- ========================================================== -->
+    <div id="adminLoginPage">
+        <div class="admin-login-box">
+            <div class="login-icon"><i class="fas fa-lock"></i></div>
+            <h2>Admin Access</h2>
+            <p>Enter password to manage content</p>
+            <input type="password" id="adminLoginPassword" placeholder="Enter admin password..." />
+            <button class="btn btn-success" id="adminLoginBtn"><i class="fas fa-unlock"></i> Unlock</button>
+            <div class="admin-error" id="adminLoginError">❌ Incorrect password</div>
+            <button class="btn btn-outline" style="width:100%;margin-top:12px;justify-content:center;" id="adminLoginCancel"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MAIN WEBSITE -->
+    <!-- ========================================================== -->
+    <div id="mainApp">
+
+        <!-- HEADER -->
+        <header>
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-film"></i>
+                    <div>
+                        <h1>Filmy<span>Hub</span></h1>
+                        <span class="tagline">Download Movies • Web Series • 2026</span>
+                    </div>
+                </div>
+                <div class="header-search">
+                    <div class="live-indicator">
+                        <span class="dot"></span>
+                        <span>LIVE</span>
+                    </div>
+                    <input type="text" id="searchInput" placeholder="🔍 Search movies..." class="search-input" />
+                    <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- CATEGORY BAR -->
+        <div class="category-bar">
+            <div class="container" id="categoryList">
+                <span class="cat-tab active" data-cat="all"><i class="fas fa-fire"></i> All</span>
+                <span class="cat-tab" data-cat="bollywood"><i class="fas fa-film"></i> Bollywood</span>
+                <span class="cat-tab" data-cat="south"><i class="fas fa-flag"></i> South Dubbed</span>
+                <span class="cat-tab" data-cat="hollywood"><i class="fas fa-globe"></i> Hollywood Hindi</span>
+                <span class="cat-tab" data-cat="web"><i class="fas fa-tv"></i> Web Series</span>
+            </div>
+        </div>
+
+        <!-- STATS BAR -->
+        <div class="stats-bar">
+            <div class="container">
+                <div class="stat-item">
+                    <i class="fas fa-film"></i>
+                    <span>Total Movies: <strong id="statMovies">0</strong></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-eye"></i>
+                    <span>Total Views: <strong id="statViews">0</strong></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-comment"></i>
+                    <span>Total Comments: <strong id="statComments">0</strong></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <span>Active Users: <strong id="statUsers">0</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <!-- ADMIN PANEL -->
+            <div id="secretAdminPanel">
+                <div class="admin-header">
+                    <h2><i class="fas fa-edit"></i> Content Manager</h2>
+                    <button class="btn btn-danger" id="closeAdminPanelBtn"><i class="fas fa-times"></i> Close</button>
+                </div>
+
+                <div class="admin-dashboard">
+                    <div class="admin-dash-card">
+                        <div class="number" id="dashMovies">0</div>
+                        <div class="label">Total Movies</div>
+                    </div>
+                    <div class="admin-dash-card">
+                        <div class="number" id="dashComments">0</div>
+                        <div class="label">Total Comments</div>
+                    </div>
+                    <div class="admin-dash-card">
+                        <div class="number" id="dashViews">0</div>
+                        <div class="label">Total Views</div>
+                    </div>
+                </div>
+
+                <form id="contentForm" enctype="multipart/form-data">
+                    <input type="hidden" id="editId" value="" />
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Title <span class="required">*</span></label>
+                            <input type="text" id="title" placeholder="e.g. Pushpa 2 - The Rule" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Category <span class="required">*</span></label>
+                            <select id="category" required>
+                                <option value="bollywood">Bollywood</option>
+                                <option value="south">South Hindi Dubbed</option>
+                                <option value="hollywood">Hollywood Hindi</option>
+                                <option value="web">Web Series</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quality / Language</label>
+                            <input type="text" id="quality" placeholder="e.g. 720p, Hindi, Dual Audio" />
+                        </div>
+                        <div class="form-group">
+                            <label>Year</label>
+                            <input type="text" id="year" placeholder="e.g. 2026" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="description" rows="4" placeholder="Write a detailed description..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Download Links (3 Qualities)</label>
+                        <div class="download-link-group">
+                            <div class="form-row-3">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label style="font-weight:500;font-size:0.75rem;color:var(--text-muted);"><i class="fas fa-download"></i> 480p</label>
+                                    <input type="url" id="link480" placeholder="https://example.com/480p" />
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label style="font-weight:500;font-size:0.75rem;color:var(--text-muted);"><i class="fas fa-download"></i> 720p</label>
+                                    <input type="url" id="link720" placeholder="https://example.com/720p" />
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label style="font-weight:500;font-size:0.75rem;color:var(--text-muted);"><i class="fas fa-download"></i> 1080p</label>
+                                    <input type="url" id="link1080" placeholder="https://example.com/1080p" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Poster Image</label>
+                        <input type="file" id="posterInput" accept="image/*" name="poster" />
+                        <div class="poster-preview" id="posterPreview">
+                            <img id="previewImg" src="#" alt="Poster preview" />
+                        </div>
+                        <input type="hidden" id="posterData" value="" />
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success" id="saveBtn"><i class="fas fa-save"></i> Add / Update</button>
+                        <button type="reset" class="btn btn-outline" id="resetBtn"><i class="fas fa-undo"></i> Reset</button>
+                    </div>
+                </form>
+
+                <hr style="margin: 20px 0; border-color: var(--border);" />
+
+                <div class="flex-between">
+                    <span><strong><i class="fas fa-database"></i> Total items:</strong> <span id="totalCount">0</span></span>
+                    <button class="btn btn-danger" id="clearAllBtn"><i class="fas fa-trash-alt"></i> Clear All</button>
+                </div>
+                <p class="text-muted mt-10"><i class="fas fa-shield-alt"></i> Admin panel is hidden from public.</p>
+            </div>
+
+            <!-- MOVIE GRID -->
+            <div class="section-title">
+                <h2><i class="fas fa-play-circle"></i> Latest Movies</h2>
+                <span class="count" id="resultCount">Showing 0 results</span>
+            </div>
+
+            <div id="movieGrid" class="movie-grid">
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading movies...</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="container">
+                <span class="footer-copy"><i class="fas fa-copyright"></i> 2026 FilmyHub. All rights reserved.</span>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-home"></i> Home</a>
+                    <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+                    <a href="#"><i class="fas fa-shield-alt"></i> DMCA</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- DETAIL OVERLAY -->
+    <!-- ========================================================== -->
+    <div id="detailOverlay">
+        <div class="detail-box">
+            <div class="detail-poster" id="detailPoster">
+                <button class="detail-close" id="detailCloseBtn"><i class="fas fa-times"></i></button>
+                <div class="no-image" id="detailNoImage"><i class="fas fa-film"></i></div>
+                <img id="detailPosterImg" src="#" alt="Poster" style="display:none;" />
+            </div>
+            <div class="detail-content">
+                <h2 class="detail-title" id="detailTitle"><i class="fas fa-play-circle"></i> Movie Title</h2>
+
+                <div class="detail-meta" id="detailMeta">
+                    <span><i class="fas fa-tag"></i> <span id="detailCategory">Category</span></span>
+                    <span><i class="fas fa-calendar"></i> <span id="detailYear">Year</span></span>
+                    <span><i class="fas fa-hdd"></i> <span id="detailQuality">Quality</span></span>
+                </div>
+
+                <div class="detail-stats">
+                    <span><i class="fas fa-eye"></i> <span id="detailViews">0</span> views</span>
+                    <span><i class="fas fa-comment"></i> <span id="detailCommentCount">0</span> comments</span>
+                </div>
+
+                <div class="detail-desc" id="detailDesc">Description...</div>
+
+                <div class="download-section">
+                    <div class="download-header">
+                        <i class="fas fa-download"></i>
+                        <h4>Download Now</h4>
+                        <span style="margin-left:auto;font-size:0.7rem;color:var(--text-muted);">
+                            <i class="fas fa-shield-alt"></i> Secure Links
+                        </span>
+                    </div>
+                    <div class="download-grid" id="downloadLinksContainer"></div>
+                </div>
+
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <h4><i class="fas fa-comments"></i> Comments (<span id="detailCommentCount2">0</span>)</h4>
+                        <span class="live-badge"><i class="fas fa-circle" style="font-size:0.4rem;color:#22c55e;"></i> Live</span>
+                    </div>
+                    <div class="comment-list" id="commentList"></div>
+                    <div class="comment-input-group">
+                        <input type="text" class="name-input" id="commentName" placeholder="Your name..." value="User" />
+                        <input type="text" id="commentInput" placeholder="Write a comment..." />
+                        <button class="btn-comment" id="commentSubmitBtn"><i class="fas fa-paper-plane"></i> Post</button>
+                    </div>
+                </div>
+
+                <div class="detail-actions">
+                    <button class="btn-action btn-edit admin-only" id="detailEditBtn"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn-action btn-delete admin-only" id="detailDeleteBtn"><i class="fas fa-trash-alt"></i> Delete</button>
+                    <button class="btn-action btn-close-detail" id="detailCloseBtn2"><i class="fas fa-times"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
