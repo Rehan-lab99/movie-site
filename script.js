@@ -31,7 +31,6 @@ const closeAdminPanelBtn = document.getElementById('closeAdminPanelBtn');
 const resultCount = document.getElementById('resultCount');
 const totalCount = document.getElementById('totalCount');
 
-// Admin stats container - hidden by default
 const adminStatsContainer = document.getElementById('adminStatsContainer');
 
 const contentForm = document.getElementById('contentForm');
@@ -72,7 +71,6 @@ const detailDeleteBtn = document.getElementById('detailDeleteBtn');
 const detailCloseBtn = document.getElementById('detailCloseBtn');
 const detailCloseBtn2 = document.getElementById('detailCloseBtn2');
 
-// Admin login
 const adminLoginPage = document.getElementById('adminLoginPage');
 const adminLoginPassword = document.getElementById('adminLoginPassword');
 const adminLoginBtn = document.getElementById('adminLoginBtn');
@@ -165,12 +163,10 @@ async function getStats() {
 // ============================================================
 async function updateAdminStats() {
     if (!isAdminUnlocked) {
-        // Public ko stats nahi dikhenge
         adminStatsContainer.style.display = 'none';
         return;
     }
 
-    // Admin ko stats dikhenge
     adminStatsContainer.style.display = 'block';
     const stats = await getStats();
     if (stats) {
@@ -261,10 +257,8 @@ async function openDetail(id) {
 
     currentDetailId = id;
 
-    // Track view (silently)
     await trackView(id);
 
-    // Reload to get updated data
     await loadMovies();
     const updatedMovie = moviesData.find(m => m.id === id);
     if (!updatedMovie) return;
@@ -275,9 +269,6 @@ async function openDetail(id) {
     detailQuality.textContent = updatedMovie.quality || 'N/A';
     detailDesc.textContent = updatedMovie.description || 'No description available.';
 
-    // PUBLIC: NO VIEWS COUNT SHOWN
-
-    // POSTER - FULL SIZE
     if (updatedMovie.poster) {
         detailPosterImg.src = updatedMovie.poster;
         detailPosterImg.style.display = 'block';
@@ -287,7 +278,6 @@ async function openDetail(id) {
         detailNoImage.style.display = 'flex';
     }
 
-    // Download links - Open in NEW TAB
     const links = updatedMovie.links || {};
     const qualities = [
         { key: '480p', label: '480p', size: 'SD' },
@@ -309,7 +299,6 @@ async function openDetail(id) {
         `;
     }).join('');
 
-    // Comments
     const comments = updatedMovie.comments || [];
     detailCommentCount.textContent = comments.length;
     detailCommentCount2.textContent = comments.length;
@@ -411,12 +400,10 @@ function doAdminLogin() {
         adminLoginPage.classList.remove('visible');
         adminPanel.classList.add('visible');
         
-        // Show admin-only elements
         document.querySelectorAll('.admin-only').forEach(el => {
             el.classList.add('visible');
         });
         
-        // Show stats for admin
         adminStatsContainer.style.display = 'block';
         
         resetForm();
@@ -441,7 +428,6 @@ adminLoginCancel.addEventListener('click', () => {
     history.pushState('', document.title, window.location.pathname + window.location.search);
 });
 
-// Check if admin already logged in
 if (sessionStorage.getItem('adminUnlocked') === 'true') {
     isAdminUnlocked = true;
     adminPanel.classList.add('visible');
